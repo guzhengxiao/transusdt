@@ -107,5 +107,8 @@ def start_order_update_stream():
 # 启动监听订单更新事件
 if __name__ == '__main__':
     config.loadConfig()
-    log_thread = threading.Thread(target=webserv.start, args=())
-    start_order_update_stream()
+    log_thread = threading.Thread(target=start_order_update_stream, args=())
+    webserv.start()
+    # log_thread = threading.Thread(target=webserv.start, args=())
+
+    # start_order_update_stream()

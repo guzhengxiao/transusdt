@@ -55,7 +55,7 @@ def make_app():
 
 def start():
     app = make_app()
-    app.listen(80)
+    app.listen(8881)
     # 这里假设日志文件名为app.log，你可以根据实际情况修改路径
     log_thread = threading.Thread(target=follow_log_file, args=('trans.log',))
     log_thread.start()
