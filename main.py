@@ -7,6 +7,7 @@ import listen_key
 # import tools
 import logging 
 from logging.handlers import RotatingFileHandler 
+import webserv
 
 logger = logging.getLogger(__name__) 
 logger.setLevel(logging.INFO) 
@@ -106,4 +107,5 @@ def start_order_update_stream():
 # 启动监听订单更新事件
 if __name__ == '__main__':
     config.loadConfig()
+    log_thread = threading.Thread(target=webserv.start, args=())
     start_order_update_stream()

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Real-time Logs</title>
+</head>
+
+<body>
+    <h1>Real-time Logs Display</h1>
+    <div id="log-container"></div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/tornado/6.2/websocket.min.js"></script>
+    <script type="text/javascript">
+        const socket = new WebSocket('/logws');
+
+        socket.onopen = function (event) {
+            console.log('Connected to server');
+        };
+
+        socket.onmessage = function (event) {
+            console.log("123")
+            const logDiv = document.createElement('div');
+            logDiv.textContent = event.data;
+            document.getElementById('log-container').appendChild(logDiv);
+        };
+
+        socket.onclose = function (event) {
+            console.log('Connection closed');
+        };
+    </script>
+</body>
+
+</html>
