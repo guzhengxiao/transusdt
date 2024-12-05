@@ -108,6 +108,7 @@ def start_order_update_stream():
 if __name__ == '__main__':
     config.loadConfig()
     log_thread = threading.Thread(target=start_order_update_stream, args=())
+    log_thread.start()
     webserv.start()
     # log_thread = threading.Thread(target=webserv.start, args=())
 
