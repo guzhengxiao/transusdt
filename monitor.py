@@ -89,7 +89,7 @@ def start():
     threading.Thread(target=bian.keepKey, args=(listenkey,), daemon=True).start()
 
     # WebSocket URL 使用 listen key
-    socket_url = config.config["socket_url"]+listenkey
+    socket_url = config.config["monitor"]["socket_url"]+listenkey
 
     # 启动 WebSocket 连接
     ws = websocket.WebSocketApp(socket_url,
