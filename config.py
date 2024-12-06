@@ -8,7 +8,6 @@ config = {}
 def loadConfig():
     global config
     with open('config.yaml', 'r') as f:
-        config1 = yaml.safe_load(f)
-        config = config1["monitor"]
+        config = yaml.safe_load(f)
 
     
