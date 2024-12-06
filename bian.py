@@ -21,7 +21,7 @@ def keepKey(listenkey):
         time.sleep(30)  # 每 30 秒发送一次 Keepalive 请求
         url = conf["api_url"]+f"/fapi/v1/listenKey?listenKey={listenkey}"
         headers = {
-            "X-MBX-APIKEY": config.config['api_key']
+            "X-MBX-APIKEY": conf['api_key']
         }
         response = requests.put(url, headers=headers)
         if response.status_code == 200:
