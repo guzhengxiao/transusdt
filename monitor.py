@@ -5,6 +5,8 @@ import threading
 import config
 import bian
 import feishu
+import datetime
+import pytz
 # import tools
 
 # 第二步：定义 WebSocket 回调函数
@@ -12,11 +14,21 @@ def on_message(ws, message):
     # 处理订单更新消息
     data = json.loads(message)
     feishuConf = config.config["monitor"]["feishu_notice"]
+
+    timestamp = data["E"]/1000
+    timezone_str = "Asia/Shanghai"
+    tz = pytz.timezone(timezone_str)
+    dt_object = datetime.datetime.fromtimestamp(timestamp, tz)
+    orderTime = dt_object.strftime("%Y-%m-%d %H:%M:%S")
+     
     if 'e' in data and data['e'] == 'ORDER_TRADE_UPDATE':
         order_status = data['o']['x']  # 订单状态（如 NEW, FILLED, CANCELED 等）
+        oid = data['o']['x']
         # 判断是否为撤单操作
         if order_status == "CANCELED":
-            threading.Thread(target=feishu.sendMsg, args=("操作: 撤单",message ,feishuConf,), daemon=True).start()
+            msg = f"""时间: {orderTime} 
+订单id: {oid}"""
+            threading.Thread(target=feishu.sendMsg, args=("操作: 撤单",msg ,feishuConf,), daemon=True).start()
             # tools.cancel_order('BTCUSDT')
             return  # 处理完成，退出函数
         if order_status == "NEW":
@@ -65,7 +77,15 @@ def on_message(ws, message):
                 pass
                 # tools.set_leverage(symbol, leverage)
                 # tools.close_first_position()
-            threading.Thread(target=feishu.sendMsg, args=(f"操作: {position}",message ,feishuConf,), daemon=True).start()
+            
+            msg = f"""时间: {orderTime} 
+订单id: {oid}
+操作: {position}
+订单类型: {order_kind}
+订单方向: {'买入' if order_direction == 'BUY' else '卖出'}
+数量: {order_quantity * config.max}
+价格: {order_price if order_price != '0' else '市价'}"""
+            threading.Thread(target=feishu.sendMsg, args=(f"操作: {position}",msg ,feishuConf,), daemon=True).start()
             # logger.info(f"操作: {position}, 订单类型: {order_kind},订单方向: {'买入' if order_direction == 'BUY' else '卖出'},数量: {order_quantity * config.max},价格: {order_price if order_price != '0' else '市价'}")
 
 def on_error(ws, error):

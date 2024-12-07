@@ -14,7 +14,9 @@ import monitor
 # 启动监听订单更新事件
 if __name__ == '__main__':
     config.loadConfig()
-    # feishu.sendMsg( "aa","bb" , config.config["monitor"]["feishu_notice"])
+    # msg = f"""时间: 123 
+    #         订单id: 444"""
+    # feishu.sendMsg( "text",msg , config.config["monitor"]["feishu_notice"])
     # quit()
 
     log_thread = threading.Thread(target=monitor.start, args=())
