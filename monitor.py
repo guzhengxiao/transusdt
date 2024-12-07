@@ -23,7 +23,7 @@ def on_message(ws, message):
      
     if 'e' in data and data['e'] == 'ORDER_TRADE_UPDATE':
         order_status = data['o']['x']  # 订单状态（如 NEW, FILLED, CANCELED 等）
-        oid = data['o']['x']
+        oid = data['o']['i']
         # 判断是否为撤单操作
         if order_status == "CANCELED":
             msg = f"""时间: {orderTime} 
