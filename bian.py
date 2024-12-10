@@ -4,6 +4,7 @@ import time
 import hmac
 import hashlib
 import feishu
+import json
 
 key = ""
 def generateKey():
@@ -146,45 +147,45 @@ def openPosition(params): #id,side, position_side, order_type, quantity, price=N
 
     # 处理响应
     if response.status_code == 200:
-        notice(f"下单成功",f"{response.json()}")
+        notice(f"下单成功",f"{json.dumps(response.json())}")
     else:
         notice("下单失败",f"{response.status_code} :: { response.text}" )
 
 
 
-def closeFirstPosition():
-    """
-    平仓操作：关闭第一个仓位，无论盈利还是亏损。
-    """
-    # 获取当前的仓位信息
-    url = base_url + "/fapi/v2/positionRisk"
-    params = {
-        "timestamp": get_server_time(),
-        'symbol':'BTCUSDT'
-    }
-    signature = generate_signature(params, api_secret)
-    params["signature"] = signature
-    headers = {"X-MBX-APIKEY": api_key}
+# def closeFirstPosition():
+#     """
+#     平仓操作：关闭第一个仓位，无论盈利还是亏损。
+#     """
+#     # 获取当前的仓位信息
+#     url = base_url + "/fapi/v2/positionRisk"
+#     params = {
+#         "timestamp": get_server_time(),
+#         'symbol':'BTCUSDT'
+#     }
+#     signature = generate_signature(params, api_secret)
+#     params["signature"] = signature
+#     headers = {"X-MBX-APIKEY": api_key}
 
-    response = requests.get(url, headers=headers, params=params)
-    print(response.text)
-    if response.status_code == 200:
-        positions = response.json()
-        # 查找 BTCUSDT 的仓位
-        for position in positions:
-            if position['symbol'] == 'BTCUSDT':
-                position_side = position['positionSide']
-                position_amt = float(position['positionAmt'])
-                print(f"发现仓位: {position_side}，数量: {position_amt}")
-                if position_side == "LONG" and position_amt > 0:
-                    # 对于 "LONG" 仓位，执行卖出操作
-                    print("Closing LONG position")
-                    open_position("BTCUSDT", "SELL", "LONG", "MARKET", abs(position_amt))
-                elif position_side == "SHORT" and position_amt < 0:
-                    # 对于 "SHORT" 仓位，执行买入操作
-                    print("Closing SHORT position")
-                    open_position("BTCUSDT", "BUY", "SHORT", "MARKET", abs(position_amt))
+#     response = requests.get(url, headers=headers, params=params)
+#     print(response.text)
+#     if response.status_code == 200:
+#         positions = response.json()
+#         # 查找 BTCUSDT 的仓位
+#         for position in positions:
+#             if position['symbol'] == 'BTCUSDT':
+#                 position_side = position['positionSide']
+#                 position_amt = float(position['positionAmt'])
+#                 print(f"发现仓位: {position_side}，数量: {position_amt}")
+#                 if position_side == "LONG" and position_amt > 0:
+#                     # 对于 "LONG" 仓位，执行卖出操作
+#                     print("Closing LONG position")
+#                     open_position("BTCUSDT", "SELL", "LONG", "MARKET", abs(position_amt))
+#                 elif position_side == "SHORT" and position_amt < 0:
+#                     # 对于 "SHORT" 仓位，执行买入操作
+#                     print("Closing SHORT position")
+#                     open_position("BTCUSDT", "BUY", "SHORT", "MARKET", abs(position_amt))
 
-        print(f"获取仓位信息失败：{response.status_code}, {response.text}")
+#         print(f"获取仓位信息失败：{response.status_code}, {response.text}")
 
 
