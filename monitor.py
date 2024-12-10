@@ -113,7 +113,7 @@ def on_message(ws, message):
 
 def on_error(ws, error):
     feishuConf = config.config["monitor"]["feishu_notice"]
-    threading.Thread(target=feishu.sendMsg, args=(f"发生错误",error ,feishuConf,), daemon=True).start()
+    threading.Thread(target=feishu.sendMsg, args=(f"发生错误",str(error) ,feishuConf,), daemon=True).start()
     # print(f"发生错误：{error}")
 
 def on_close(ws, close_status_code, close_msg):
