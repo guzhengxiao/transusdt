@@ -43,7 +43,6 @@ def getServerTime():
     if response.status_code == 200:
         return response.json()['serverTime']
     else:
-        print("无法获取服务器时间")
         return None
 
 def notice(title , msg):
@@ -143,9 +142,7 @@ def openPosition(params): #id,side, position_side, order_type, quantity, price=N
     #     'type': order_type,
     #     'quantity': quantity* config.max
     # }
-    print(123)
     response = apiCall("/fapi/v1/order" , params , "post")
-    print(3333)
 
     # 处理响应
     if response.status_code == 200:
