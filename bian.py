@@ -60,7 +60,7 @@ def apiCall(path, params , method=None):
 
     headers = {'X-MBX-APIKEY': conf["api_key"]}
 
-    params['symbol'] = 'BTCUSDT',
+    params['symbol'] = 'BTCUSDT'
     params["timestamp"] = getServerTime()
     params["signature"] = sign(params, conf["api_secret"])
     if method == "delete" :
