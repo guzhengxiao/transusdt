@@ -97,10 +97,10 @@ def on_message(ws, message):
             }
             if data['o']['o'] == "LIMIT":
                 pm['price'] = data['o'].get("p")
-            if data['o'].get("sp"): pm["stopPrice"] = data['o'].get("sp")
+            if data['o'].get("sp") and data['o'].get("sp") != "0": pm["stopPrice"] = data['o'].get("sp")
             if data['o'].get("cp"): pm["closePosition"] = data['o'].get("cp")
             # if data['o']['o'] == "TRAILING_STOP_MARKET":
-            if data['o'].get("AP"): pm["activationPrice"] = data['o'].get("AP")
+            if data['o'].get("AP") and data['o'].get("AP") != "0": pm["activationPrice"] = data['o'].get("AP")
             if data['o'].get("cr"): pm["callbackRate"] = data['o'].get("cr")
 
             if data['o'].get("wt"): pm["workingType"] = data['o'].get("wt")
