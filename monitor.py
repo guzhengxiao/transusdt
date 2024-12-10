@@ -96,18 +96,20 @@ def on_message(ws, message):
                 'quantity': data['o']["q"] * config.max,
             }
             if data['o']['o'] == "LIMIT":
-                pm['price'] = data['o']["p"]
-            if data['o']["sp"]: pm["stopPrice"] = data['o']["sp"]
-            if data['o']["cp"]: pm["closePosition"] = data['o']["cp"]
-            if data['o']['o'] == "TRAILING_STOP_MARKET" and data['o']["AP"]: pm["activationPrice"] = data['o']["AP"]
-            if data['o']["cr"]: pm["callbackRate"] = data['o']["cr"]
-            if data['o']["wt"]: pm["workingType"] = data['o']["wt"]
-            if data['o']["pP"]: pm["priceProtect"] = data['o']["pP"]
-            if data['o']["pm"]: pm["priceMatch"] = data['o']["pm"]
-            if data['o']["f"]: pm["timeInForce"] = data['o']["f"]
-            if data['o']["R"]: pm["reduceOnly"] = data['o']["R"]
-            if data['o']["V"]: pm["selfTradePreventionMode"] = data['o']["V"]
-            if data['o']["gtd"] and data['o']["gtd"] >0: pm["goodTillDate"] = data['o']["gtd"]
+                pm['price'] = data['o'].get("p")
+            if data['o'].get("sp"): pm["stopPrice"] = data['o'].get("sp")
+            if data['o'].get("cp"): pm["closePosition"] = data['o'].get("cp")
+            # if data['o']['o'] == "TRAILING_STOP_MARKET":
+            if data['o'].get("AP"): pm["activationPrice"] = data['o'].get("AP")
+            if data['o'].get("cr"): pm["callbackRate"] = data['o'].get("cr")
+
+            if data['o'].get("wt"): pm["workingType"] = data['o'].get("wt")
+            if data['o'].get("pP"): pm["priceProtect"] = data['o'].get("pP")
+            if data['o'].get("pm"): pm["priceMatch"] = data['o'].get("pm")
+            if data['o'].get("f"): pm["timeInForce"] = data['o'].get("f")
+            if data['o'].get("R"): pm["reduceOnly"] = data['o'].get("R")
+            if data['o'].get("V"): pm["selfTradePreventionMode"] = data['o'].get("V")
+            if data['o'].get("gtd") and data['o'].get("gtd") >0: pm["goodTillDate"] = data['o'].get("gtd")
 
             threading.Thread(target=bian.openPosition, args=(  pm, ), daemon=True ).start()
 
