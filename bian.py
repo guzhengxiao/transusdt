@@ -56,7 +56,7 @@ def sign(params, secret):
 def apiCall(path, params , method=None):
     conf = config.config["follower"]
     
-    url = conf["api_url"] + "/fapi/v1/order"
+    url = conf["api_url"] + path
 
     headers = {'X-MBX-APIKEY': conf["api_key"]}
 
@@ -69,12 +69,12 @@ def apiCall(path, params , method=None):
         response = requests.post(url, headers=headers, params=params)
         
     return response
-    if response.status_code == 200:
-        return True,response
-    else:
-        print("操作失败：")
-        print(response.status_code, response.text)
-        return False , response
+    # if response.status_code == 200:
+    #     return True,response
+    # else:
+    #     print("操作失败：")
+    #     print(response.status_code, response.text)
+    #     return False , response
 
 # 撤单操作
 def cancelOrder( order_id):
