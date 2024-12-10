@@ -99,7 +99,7 @@ def on_message(ws, message):
                 pm['price'] = data['o']["p"]
             if data['o']["sp"]: pm["stopPrice"] = data['o']["sp"]
             if data['o']["cp"]: pm["closePosition"] = data['o']["cp"]
-            if data['o']["AP"]: pm["activationPrice"] = data['o']["AP"]
+            if data['o']['o'] == "TRAILING_STOP_MARKET" and data['o']["AP"]: pm["activationPrice"] = data['o']["AP"]
             if data['o']["cr"]: pm["callbackRate"] = data['o']["cr"]
             if data['o']["wt"]: pm["workingType"] = data['o']["wt"]
             if data['o']["pP"]: pm["priceProtect"] = data['o']["pP"]

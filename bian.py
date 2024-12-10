@@ -143,7 +143,9 @@ def openPosition(params): #id,side, position_side, order_type, quantity, price=N
     #     'type': order_type,
     #     'quantity': quantity* config.max
     # }
+    print(123)
     response = apiCall("/fapi/v1/order" , params , "post")
+    print(3333)
 
     # 处理响应
     if response.status_code == 200:
