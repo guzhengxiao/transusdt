@@ -1,6 +1,5 @@
 import yaml
 # API 密钥
-symbol = 'BTCUSDT'
 leverage = 100
 max = 1
 config = {}

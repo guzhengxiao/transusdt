@@ -29,9 +29,10 @@ def on_message(ws, message):
             msg = f"""时间: {orderTime} 
 订单id: {oid}"""
             threading.Thread(target=feishu.sendMsg, args=("操作: 撤单",msg ,feishuConf,), daemon=True).start()
+            threading.Thread(target=bian.cancelOrder, args=(f"b-{oid}",), daemon=True).start()
             # tools.cancel_order('BTCUSDT')
             return  # 处理完成，退出函数
-        if order_status == "NEW":
+        elif order_status == "NEW":
             # 提取关键信息
             order_direction = data['o']['S']  # 订单方向（BUY/SELL）
             order_type = data['o']['o']  # 订单类型（LIMIT/MARKET 等）
@@ -83,10 +84,32 @@ def on_message(ws, message):
 操作: {position}
 订单类型: {order_kind}
 订单方向: {'买入' if order_direction == 'BUY' else '卖出'}
-数量: {order_quantity * config.max}
+数量: {order_quantity }
 价格: {order_price if order_price != '0' else '市价'}"""
             threading.Thread(target=feishu.sendMsg, args=(f"操作: {position}",msg ,feishuConf,), daemon=True).start()
             # logger.info(f"操作: {position}, 订单类型: {order_kind},订单方向: {'买入' if order_direction == 'BUY' else '卖出'},数量: {order_quantity * config.max},价格: {order_price if order_price != '0' else '市价'}")
+            pm = {
+                'newClientOrderId' :  f"b-{oid}",
+                'side': data['o']["S"],
+                'positionSide': data['o']["ps"],
+                'type': data['o']["o"],
+                'quantity': data['o']["q"] * config.max,
+            }
+            if data['o']['o'] == "LIMIT":
+                pm['price'] = data['o']["p"]
+            if data['o']["sp"]: pm["stopPrice"] = data['o']["sp"]
+            if data['o']["cp"]: pm["closePosition"] = data['o']["cp"]
+            if data['o']["AP"]: pm["activationPrice"] = data['o']["AP"]
+            if data['o']["cr"]: pm["callbackRate"] = data['o']["cr"]
+            if data['o']["wt"]: pm["workingType"] = data['o']["wt"]
+            if data['o']["pP"]: pm["priceProtect"] = data['o']["pP"]
+            if data['o']["pm"]: pm["priceMatch"] = data['o']["pm"]
+            if data['o']["f"]: pm["timeInForce"] = data['o']["f"]
+            if data['o']["R"]: pm["reduceOnly"] = data['o']["R"]
+            if data['o']["V"]: pm["selfTradePreventionMode"] = data['o']["V"]
+            if data['o']["gtd"] and data['o']["gtd"] >0: pm["goodTillDate"] = data['o']["gtd"]
+
+            threading.Thread(target=bian.openPosition, args=(  pm, ), daemon=True ).start()
 
 def on_error(ws, error):
     feishuConf = config.config["monitor"]["feishu_notice"]
@@ -99,7 +122,8 @@ def on_close(ws, close_status_code, close_msg):
 
 def on_open(ws):
     feishuConf = config.config["monitor"]["feishu_notice"]
-    threading.Thread(target=feishu.sendMsg, args=(f"WebSocket 连接已开启。","" ,feishuConf,), daemon=True).start()
+    threading.Thread(target=feishu.sendMsg, args=(f"开机运行","" ,feishuConf,), daemon=True).start()
+    bian.setLeverage(config.leverage)
 
 # 第四步：连接到 WebSocket，使用生成的 listen key
 def start():
